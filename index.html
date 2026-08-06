@@ -1,74 +1,774 @@
-<!DOCTYPE html>
-<html lang="ku" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>IPTV PRO UI</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.10.0/video-js.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --accent: #6c5ce7; --bg: #0f0f1a; --card: #1a1a2e; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; }
-        
-        .app { display: flex; height: 100vh; }
-        
-        /* Sidebar */
-        .sidebar { width: 260px; background: #0a0a14; padding: 20px; border-left: 1px solid #333; }
-        .logo { font-size: 22px; font-weight: bold; color: var(--accent); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
-        .nav-btn { width: 100%; padding: 15px; margin-bottom: 10px; background: transparent; border: none; color: #a2a2c2; text-align: right; cursor: pointer; transition: 0.3s; border-radius: 10px; }
-        .nav-btn:hover, .nav-btn.active { background: var(--accent); color: white; }
-        
-        /* Main */
-        .main { flex: 1; padding: 30px; overflow-y: auto; }
-        .player-container { background: #000; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 2px solid #2d2d44; }
-        
-        /* Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
-        .channel-card { background: var(--card); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.4s; border: 1px solid #2d2d44; }
-        .channel-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(108,92,231,0.2); }
-        .channel-card i { font-size: 30px; color: var(--accent); margin-bottom: 10px; display: block; }
-        
-        .search-box { width: 100%; padding: 15px; border-radius: 12px; background: var(--card); border: none; color: white; margin-bottom: 20px; }
-    </style>
-</head>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head><meta content="text/html; charset=utf-8" http-equiv="Content-Type" /><meta content="initial-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" name="viewport" />
+<meta name="description" content="meta"  />
+<meta name="keywords" content="meta" />
+  <title>
+	Payam TV : کەناڵی ئاسمانی پەیام
+</title><link href="https://peyam.net/wene/favicon.ico" rel="shortcut icon" /><link href="https://peyam.net/wene/payamtv4.css" rel="stylesheet" /><link href="https://peyam.net/wene/menustyle.css" rel="stylesheet" type="text/css" /><link href="https://peyam.net/wene/css/all.css" rel="stylesheet" type="text/css" />
+    <script src="https://peyam.net/js/jquery.min.js" type=""></script>
+    <link href="https://peyam.net/css/lightgallery.css" rel="stylesheet" /><link href="https://peyam.net/css/lightslider.css" rel="stylesheet" /><link href="https://peyam.net/css/lightslider2.css" rel="stylesheet" /><link href="https://peyam.net/css/liMarquee.css" rel="stylesheet" type="text/css" /></head>
+
 <body>
 
-<div class="app">
-    <div class="sidebar">
-        <div class="logo"><i class="fas fa-tv"></i> IPTV PRO</div>
-        <button class="nav-btn active"><i class="fas fa-home"></i> سەرەکی</button>
-        <button class="nav-btn"><i class="fas fa-satellite"></i> کەناڵەکان</button>
-        <button class="nav-btn"><i class="fas fa-heart"></i> دڵخوازەکان</button>
-    </div>
-
-    <div class="main">
-        <input type="text" class="search-box" id="search" placeholder="🔍 بەدوای کەناڵێکدا بگەڕێ...">
-        
-        <div class="player-container">
-            <video id="player" class="video-js vjs-big-play-centered" controls></video>
-        </div>
-
-        <div class="grid" id="list"></div>
-    </div>
+<form name="aspnetForm" method="post" action="./live.aspx" id="aspnetForm">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTEwMDUyNjYzMjgPZBYCZg9kFgQCAQ9kFgICAg8WAh4LXyFJdGVtQ291bnQCARYCZg9kFgJmDxUCBG1ldGEEbWV0YWQCAw9kFgZmDxYCHwACBBYIZg9kFgJmDxUCIWh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS9wYXlhbXR2LxZmYWIgZmEtZmFjZWJvb2stc3F1YXJlZAIBD2QWAmYPFQIbaHR0cHM6Ly90d2l0dGVyLmNvbS90dnBheWFtFWZhYiBmYS10d2l0dGVyLXNxdWFyZWQCAg9kFgJmDxUCI2h0dHBzOi8vd3d3Lmluc3RhZ3JhbS5jb20vcGF5YW1fdHYvEGZhYiBmYS1pbnN0YWdyYW1kAgMPZBYCZg8VAktodHRwczovL3d3dy55b3V0dWJlLmNvbS9jaGFubmVsL1VDYzFRT3VWNF91WllRZG1XbS1JYzQ5dz92aWV3X2FzPXN1YnNjcmliZXIVZmFiIGZhLXlvdXR1YmUtc3F1YXJlZAIBDxYCHwBmZAIEDxYCHwACBBYIZg9kFgJmDxUCIWh0dHBzOi8vd3d3LmZhY2Vib29rLmNvbS9wYXlhbXR2LxZmYWIgZmEtZmFjZWJvb2stc3F1YXJlZAIBD2QWAmYPFQIbaHR0cHM6Ly90d2l0dGVyLmNvbS90dnBheWFtFWZhYiBmYS10d2l0dGVyLXNxdWFyZWQCAg9kFgJmDxUCI2h0dHBzOi8vd3d3Lmluc3RhZ3JhbS5jb20vcGF5YW1fdHYvEGZhYiBmYS1pbnN0YWdyYW1kAgMPZBYCZg8VAktodHRwczovL3d3dy55b3V0dWJlLmNvbS9jaGFubmVsL1VDYzFRT3VWNF91WllRZG1XbS1JYzQ5dz92aWV3X2FzPXN1YnNjcmliZXIVZmFiIGZhLXlvdXR1YmUtc3F1YXJlZGT3JrLE5/nd8r+zH/t3MpGSJi6PtofRLequc+XlPMaVeA==" />
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.10.0/video.min.js"></script>
-<script>
-    // کۆدی پێشوو بەکارهێنراوە بۆ لۆژیکی کارکردن
-    const player = videojs("player", { fluid: true, autoplay: true });
-    
-    // کاتێک کارتێک دروست دەکەیت، ئەم کۆدەت بەکاربهێنە بۆ جوانکردنی:
-    function render(list) {
-        let box = document.getElementById("list");
-        box.innerHTML = "";
-        list.forEach((c, i) => {
-            let div = document.createElement("div");
-            div.className = "channel-card";
-            div.innerHTML = `<i class="fas fa-play-circle"></i><div>${c.name}</div>`;
-            div.onclick = () => play(i);
-            box.appendChild(div);
-        });
+<div>
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="99F3F7F3" />
+</div>
+
+
+    <div class="maincontainer">
+
+
+        <div class="bluebar">
+            <div class="container-menu">
+                <nav class="navigation">
+                    <span class="hamburger-menu">
+                        &nbsp;<span class="burger-1"></span>
+                        <span class="burger-2"></span><span class="burger-3"></span>
+                    </span>
+                    <ul class="core-menu">
+                         <li><a href="https://peyam.net/Home">سەرەتا</a></li>
+                        <li>
+                            <a href="#">هەواڵ <i class="far fa-angle-down"></i></a>
+                            <ul class="dropdown">
+                                <li><a href="https://peyam.net/Kurdistan">کوردستان</a></li>
+                                <li><a href="https://peyam.net/East">ڕۆژهەڵاتی ناوەڕاست</a></li>
+                                <li><a href="https://peyam.net/World">جیهان</a></li>
+                                  <li><a href="https://peyam.net/Iraq">عێراق</a></li>
+                                <li><a href="https://peyam.net/Economy">ئابوری</a></li>
+                            </ul>
+                        </li>
+                         <li>
+                            <a href="#">وەرزش<i class="far fa-angle-down"></i></a>
+                            <ul class="dropdown">
+                                <li><a href="https://peyam.net/sport">وەرزش</a></li>
+                                <li><a href="https://peyam.net/sport-report">ڕاپۆرتی وەرزشی</a></li>
+                                <li><a href="https://peyam.net/Sport-Article">وتاری وەرزشی</a></li>
+                           
+                            </ul>
+                        </li>
+                    
+                        <li><a href="https://peyam.net/Video">ڤیدیۆ</a></li>
+                        <li><a href="https://peyam.net/Article">وتار</a></li>
+                        <li><a href="https://peyam.net/hamarang">هەمەڕەنگ</a></li>
+                        <li><a href="https://peyam.net/Technology">ئای تی و تەکنەلۆژیا</a></li>
+                        <li><a href="https://peyam.net/health">تەندروستی</a></li>
+                         <li><a href="https://peyam.net/family">خێزان</a></li>
+                        
+                    </ul>
+                </nav>
+            </div>
+            <div id="mySidenav" class="sidenav">
+                <a class="closebtn" href="javascript:void(0)" onclick="closeNav()">
+                    &times;
+                    دایبخەرەوە
+                </a>
+                  <p><a href="https://peyam.net/Home">سەرەتا</a> </p>
+                <p><a href="https://peyam.net/Kurdistan">کوردستان</a> </p>
+                <p><a href="https://peyam.net/East">ڕۆژهەڵاتی ناوەڕاست</a> </p>
+                <p><a href="https://peyam.net/World">جیهان</a></p>
+                 <p><a href="https://peyam.net/Iraq">عێراق</a></p>
+                <p><a href="https://peyam.net/Economy">ئابوری</a></p>
+                <p><a href="https://peyam.net/sport">وەرزش</a> </p>
+                <p><a href="https://peyam.net/Gallery">وێنە</a></p>
+                <p><a href="https://peyam.net/Video">ڤیدیۆ</a></p>
+                <p><a href="https://peyam.net/Article">وتار</a></p>
+                <p><a href="https://peyam.net/hamarang">هەمەڕەنگ</a></p>
+                <p><a href="https://peyam.net/Technology">ئای تی و تەکنەلۆژیا</a></p>
+                <p><a href="https://peyam.net/health">تەندروستی</a></p>
+                <p><a href="https://peyam.net/family">خێزان</a></p>
+                 <p><a href="https://peyam.net/hunar">ئەدەب و هونەر</a></p>
+                 <p><a href="https://peyam.net/interview">چاوپێکەوتن</a></p>
+                <p><a href="https://peyam.net/Report">ڕاپۆرتی پەیامنێران</a></p>
+                <p><a href="https://peyam.net/About">دەربارە</a></p>
+                <p><a href="https://peyam.net/Programs">بەرنامەکان</a></p>
+                <p><a href="https://peyam.net/episode/7">بەخشین</a></p>
+                <p><a href="https://peyam.net/komal">کۆمەڵ</a></p>
+                <p><a href="https://peyam.net/Contact">پەیوەندی</a></p>
+                 <p><a href="https://peyam.net/archive">ئەرشیف</a></p>
+            </div>
+            <span class="menuicon" onclick="openNav()">
+                <img alt="" src="https://peyam.net/wene/menu.png" />
+            </span>
+            <script>
+                function openNav() {
+                    document.getElementById("mySidenav").style.width = "350px";
+                }
+
+                function closeNav() {
+                    document.getElementById("mySidenav").style.width = "0";
+                }
+            </script>
+            <div class="socialicons">
+
+               
+			 
+                   
+
+                <a href="https://www.facebook.com/payamtv/" target="_blank">
+                    <i class="fab fa-facebook-square"></i>
+                </a>
+               
+
+                <a href="https://twitter.com/tvpayam" target="_blank">
+                    <i class="fab fa-twitter-square"></i>
+                </a>
+               
+
+                <a href="https://www.instagram.com/payam_tv/" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+               
+
+                <a href="https://www.youtube.com/channel/UCc1QOuV4_uZYQdmWm-Ic49w?view_as=subscriber" target="_blank">
+                    <i class="fab fa-youtube-square"></i>
+                </a>
+               
+            </div>
+            <div class="kashwhawa">
+                <a href="https://peyam.net/Kashwhawa"><i class="far fa-cloud"></i></a>
+            </div>
+            <div class="live">
+                <a href="../live.aspx"><span>●</span>Live</a>
+            </div>
+           
+            <div class="logo">
+                <a href="https://peyam.net/Home"><img alt="" src="https://peyam.net/wene/logo.png" /></a>
+                </div>
+        </div>
+
+
+
+        <div class="silverbar">
+            <div class="secondarymenu">
+                <ul>
+                    <li><a href="https://peyam.net/Report">ڕاپۆرتی پەیامنێران</a></li>
+                    <li><a href="https://peyam.net/About">دەربارە</a></li>
+                     <li><a href="https://peyam.net/Gallery">وێنە</a></li>
+                    <li><a href="https://peyam.net/Programs">بەرنامەکان</a></li>
+                    <li><a href="https://peyam.net/episode/7">بەخشین</a></li>
+                    <li><a href="https://peyam.net/komal">کۆمەڵ </a></li>
+                    <li><a href="https://peyam.net/Contact">پەیوەندی</a></li>
+                </ul>
+            </div>
+            <button id="searchbtn" type="button">
+                <i class="far fa-search"></i>
+            </button>
+            <div id="garran" class="searchdiv">
+
+                <div class="gsearch">
+                    <script type="">
+                        (function () {
+                            var cx = '012161537787514975004:qriaejuk7-w';
+                            var gcse = document.createElement('script');
+                            gcse.type = 'text/javascript';
+                            gcse.async = true;
+                            gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+                            var s = document.getElementsByTagName('script')[0];
+                            s.parentNode.insertBefore(gcse, s);
+                        })();
+
+                        window.onload = function () {
+                            document.getElementById('gsc-i-id1').placeholder = 'گەڕان';
+                        };
+
+                    </script>
+                    <gcse:search></gcse:search>
+                </div>
+
+
+
+
+            </div>
+          
+        </div>
+
+
+        <div class="clearfix">
+        </div>
+
+
+
+          
+
+        
+
+    <link rel='stylesheet' href='https://unpkg.com/plyr@3/dist/plyr.css'>
+<style>
+    .container {
+        margin: 20px auto;
+        width: 100%;
     }
-    // ... باقی کۆدەکەت لێرە زیاد بکە ...
+
+    video {
+        width: 100%;
+    }
+</style>
+
+
+<script>
+    window.console = window.console || function (t) { };
 </script>
+<script>
+    if (document.location.search.match(/type=embed/gi)) {
+        window.parent.postMessage("resize", "*");
+    }
+</script>
+
+
+
+   <div class="nawarok">
+<div class="detailtitle">
+
+  
+<div class="stream">
+
+ <div class="container">
+                <video controls crossorigin playsinline poster=""></video>
+            </div>
+            <script src="https://cdn.rawgit.com/video-dev/hls.js/18bb552/dist/hls.min.js"></script>
+             <script src="https://cdn.rawgit.com/video-dev/hls.js/18bb552/dist/hls.min.js"></script>
+            <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-2c7831bb44f98c1391d6a4ffda0e1fd302503391ca806e7fcc7b9b87197aec26.js"></script>
+            <script src="https://cdnjs.cloudflare.com/polyfill/v2/polyfill.min.js?features=es6,Array.prototype.includes,CustomEvent,Object.entries,Object.values,URL"></script>
+            <script src='https://unpkg.com/plyr@3'></script>
+            <script id="rendered-js">
+                document.addEventListener('DOMContentLoaded', () => {
+                    const source = 'https://media2.streambrothers.com:1936/8218/8218/playlist.m3u8';
+                    const video = document.querySelector('video');
+
+                    // For more options see: https://github.com/sampotts/plyr/#options
+                    // captions.update is required for captions to work with hls.js
+                    const player = new Plyr(video, { captions: { active: true, update: true, language: 'en' } });
+
+                    if (!Hls.isSupported()) {
+                        video.src = source;
+                    } else {
+                        // For more Hls.js options, see https://github.com/dailymotion/hls.js
+                        const hls = new Hls();
+                        hls.loadSource(source);
+                        hls.attachMedia(video);
+                        window.hls = hls;
+
+                        // Handle changing captions
+                        player.on('languagechange', () => {
+                            // Caption support is still flaky. See: https://github.com/sampotts/plyr/issues/994
+                            setTimeout(() => hls.subtitleTrack = player.currentTrack, 50);
+                        });
+                    }
+
+                    // Expose player so it can be used from the console
+                    window.player = player;
+                });
+//# sourceURL=pen.js
+            </script>
+
+
+</div>
+
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+                <div class="barixwarawa">
+
+            <div class="barixwarawa_content">
+
+
+
+
+
+              
+
+
+
+   
+  
+
+
+                <div class="kashwhawa_2">
+                    <a href=""><i class="far fa-cloud"></i></a>
+                </div>
+
+
+                <div class="socialicons_2">
+                      
+
+                <a href="https://www.facebook.com/payamtv/" target="_blank">
+                    <i class="fab fa-facebook-square"></i>
+                </a>
+               
+
+                <a href="https://twitter.com/tvpayam" target="_blank">
+                    <i class="fab fa-twitter-square"></i>
+                </a>
+               
+
+                <a href="https://www.instagram.com/payam_tv/" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+               
+
+                <a href="https://www.youtube.com/channel/UCc1QOuV4_uZYQdmWm-Ic49w?view_as=subscriber" target="_blank">
+                    <i class="fab fa-youtube-square"></i>
+                </a>
+               
+                </div>
+
+
+
+                <div class="donation">
+                    <a href="https://peyam.net/episode/7"><i class="fas fa-box-heart"></i>بەخشین</a>
+                </div>
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+        
+                <div class="footerlinks">
+
+            <div class="footerlinks_content">
+
+
+
+
+                <div class="footermenu">
+                    <ul>
+                        <li>
+                            <h4>هەواڵەکان</h4>
+                            <p><a href="https://peyam.net/Kurdistan">کوردستان</a></p>
+                            <p><a href="https://peyam.net/East">ڕۆژهەڵاتی ناوەڕاست</a></p>
+                            <p><a href="https://peyam.net/World">جیهان</a></p>
+                             <p><a href="https://peyam.net/Iraq">عێراق</a></p>
+                            <p><a href="https://peyam.net/Economy">ئابوری</a></p>
+                        </li>
+
+
+                        <li>
+                            <h4>وەرزش</h4>
+                            <p><a href="https://peyam.net/sport">هەواڵ</a></p>
+                            <p><a href="https://peyam.net/sport-report">ڕاپۆرتی وەرزشی</a></p>
+                            <p><a href="https://peyam.net/Sport-Article">وتاری وەرزشی</a></p>
+                        </li>
+
+
+                        <li>
+                            <h4>بەشەکان</h4>
+                            <p><a href="https://peyam.net/Gallery">وێنە</a></p>
+                            <p><a href="https://peyam.net/Video">ڤیدیۆ</a></p>
+                            <p><a href="https://peyam.net/komal">کۆمەڵ </a></p>
+                            <p><a href="https://peyam.net/Report">ڕاپۆرتی پەیامنێران</a></p>
+                            <p><a href="https://peyam.net/Kashwhawa">کەشوهەوا</a></p>
+                        </li>
+
+
+                        <li>
+                            <p><a href="https://peyam.net/hamarang">هەمەڕەنگ</a></p>
+                            <p><a href="https://peyam.net/Technology">ئای تی و تەکنەلۆژیا</a></p>
+                            <p><a href="https://peyam.net/health">تەندروستی</a></p>
+                              <p><a href="https://peyam.net/family">خێزان</a></p>
+                            <p><a href="https://peyam.net/About">دەربارەی ئێمە</a></p>
+                            <p><a href="https://peyam.net/Contact">پەیوەندی</a></p>
+                            <p><a href="https://peyam.net/archive">ئەرشیف</a></p>
+                        </li>
+
+
+                        <li>
+                            <h4>بنکەی سەرەکی</h4>
+                            <p>
+
+                                سلێمانی/ شه‌قامی بازنه‌ی مه‌لیک مه‌حمود - گه‌ڕه‌کی کازیوه‌ -
+                                پشت نه‌خۆشخانه‌ی‌ هه‌رێم
+                                بۆ ناردنی‌ هه‌واڵ و بابه‌ت و سه‌رنج و تێبینییه‌كانتان ده‌توانن په‌یوه‌ندی‌
+                                به‌م ئیمه‌یله‌وه‌ بكه‌ن
+                                <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0676677f676b4676677f676b287270">[email&#160;protected]</a>
+
+                            </p>
+                        </li>
+
+                        <li>
+
+
+                            <img src="https://peyam.net/wene/logo.png" />
+                      
+           
+
+                        </li>
+
+
+
+
+
+                    </ul>
+                    <div class="clearfix">
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="copyright">
+
+
+
+
+                    <p>مافی لەبەرگرتنەوەی بابەتەکانی ئەم ماڵپەڕە پارێزراوە بۆ کەناڵی ئاسمانی پەیام</p>
+                    <p>
+                        PayamTv
+                        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/javascript">document.write(new Date().getFullYear());</script><sup>©</sup> / Developed by <a href="https://www.avestagroup.net/" target="_blank">Avesta Group</a>
+                    </p>
+
+
+
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        	
+
+        
+
+
+
+    </div>
+        
+        
+        
+        
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type=""></script>
+        <script src="https://peyam.net/js/lightslider.js" type=""></script>
+        <script type="">
+
+
+            $(document).ready(function () {
+                $('#content-slider').lightSlider({
+                    item: 4,
+                    loop: false,
+                    slideMove: 2,
+                    easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
+                    speed: 600,
+                    responsive: [
+
+                        {
+                            breakpoint: 960,
+                            settings: {
+                                item: 2,
+                                slideMove: 1,
+                                slideMargin: 6,
+                            }
+                        },
+
+
+
+
+                        {
+                            breakpoint: 599,
+                            settings: {
+                                item: 1,
+                                slideMove: 1
+                            }
+
+
+
+                        }
+                    ]
+                });
+            });
+
+
+
+
+        </script>
+
+
+
+
+        <script type="">
+            $(document).ready(function () {
+                //the trigger on hover when cursor directed to this class
+                $(".core-menu li").hover(
+                    function () {
+                        //i used the parent ul to show submenu
+                        $(this).children('ul').slideDown('fast');
+                    },
+                    //when the cursor away
+                    function () {
+                        $('ul', this).slideUp('fast');
+                    });
+                //this feature only show on 600px device width
+                $(".hamburger-menu").click(function () {
+                    $(".burger-1, .burger-2, .burger-3").toggleClass("open");
+                    $(".core-menu").slideToggle("fast");
+                });
+            });
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var url = window.location;
+                $('.core-menu li ').find('.active').removeClass('active');
+                $('.core-menu li').each(function () {
+                    if (this.href == url) {
+                        $(this).parent().addClass('active');
+                    }
+                });
+            });
+        </script>
+        <a id="return-to-top" href="javascript:"><i class="fas fa-arrow-alt-up"></i>سەرەتا</a>
+        <script type="">
+
+            // ===== Scroll to Top ====
+            $(window).scroll(function () {
+                if ($(this).scrollTop() >= 50) {
+                    $('#return-to-top').fadeIn(200);
+                } else {
+                    $('#return-to-top').fadeOut(200);
+                }
+            });
+            $('#return-to-top').click(function () {
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+        </script>
+        <script type="">
+
+            function myFunction() {
+
+
+
+            }
+
+
+            $(document).ready(function () {
+                $("#searchbtn").click(function () {
+
+
+
+                    var x = document.getElementById("garran");
+
+
+                    if (x.style.display === "none") {
+
+                        x.style.display = "block";
+
+                    } else {
+                        x.style.display = "none";
+                    }
+
+
+
+
+                    // $("#garran").fadeIn();
+
+
+                    // $("#garran").fadeOut();
+
+
+
+
+                });
+            });
+        </script>
+
+
+        <script src="https://peyam.net/js/jquery.liMarquee.js" type=""></script>
+        <script type="">
+            $(window).load(function () {
+
+                /* basic - default settings */
+                $('.str1').liMarquee();
+
+                /* some custom settings */
+                $('.str2').liMarquee({
+                    direction: 'left',
+                    loop: -1,
+                    scrolldelay: 500,
+                    scrollamount: 90,
+                    circular: false,
+                    hoverstop: false,
+                    drag: false
+                });
+
+                $('.str3').liMarquee({
+                    direction: 'left',
+                    loop: -1,
+                    scrolldelay: 0,
+                    scrollamount: 100,
+                    circular: true,
+                    drag: true
+                });
+
+                $('.str3-2').liMarquee({
+                    direction: 'left',
+                    loop: -1,
+                    scrolldelay: 0,
+                    scrollamount: 120,
+                    circular: true,
+                    drag: true
+                });
+
+                $('.str4').liMarquee({
+                    direction: 'up',
+                    loop: -1,
+                    scrolldelay: 0,
+                    scrollamount: 30,
+                    circular: true,
+                    drag: true
+                });
+
+                $('.str5').liMarquee({
+                    direction: 'down',
+                    loop: -1,
+                    scrolldelay: 0,
+                    scrollamount: 30,
+                    circular: true,
+                    drag: false
+                });
+
+                $('.str6').liMarquee({
+                    direction: 'up',
+                    loop: -1,
+                    scrolldelay: 0,
+                    scrollamount: 30,
+                    circular: false,
+                    drag: true,
+                    runshort: false
+                });
+
+
+                $('.str8').liMarquee({
+                    direction: 'down',
+                    loop: -1,
+                    scrolldelay: 0,
+                    scrollamount: 30,
+                    circular: false,
+                    drag: true
+                });
+
+
+
+                $('.str9').liMarquee({
+                    direction: 'right',
+                    loop: -1,
+                    scrolldelay: 500,
+                    scrollamount: 90,
+                    circular: false,
+                    hoverstop: true,
+                    drag: false
+                });
+
+            })
+        </script>
+        <script type="">
+            $(document).ready(function () {
+
+                $('.hawalibapala').on('click', function () {
+                    $('.hawalibapala').hide();
+                });
+            });
+        </script>
+
+
+
+
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5c9a0f2b249e5e15"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#lightgallery').lightGallery();
+        });
+        </script>
+
+<script type="" src="https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js"></script>
+<script type="" src="https://peyam.net/js/lightgallery-all.min.js"></script>
+
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"33d2c1bec1a5425a89205fe207422f02","r":1}' crossorigin="anonymous"></script>
 </body>
+
 </html>
